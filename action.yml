@@ -18,3 +18,8 @@ inputs:
      Time zone to use. Default is UTC.
     required: false
     default: UTC
+  persist-credentials:
+    description: |-
+     persist auth from steps
+    required: false
+    default: false
