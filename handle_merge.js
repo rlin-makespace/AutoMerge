@@ -21,6 +21,7 @@ async function handleMerge() {
       owner,
       repo,
       state: "open",
+      base: "master"
     },
     (response) => {
       return response.data
