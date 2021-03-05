@@ -34,6 +34,8 @@ async function handleMerge() {
             number: pullRequest.number,
             html_url: pullRequest.html_url,
             ref: pullRequest.head.sha,
+            base: pullRequest.base.ref,
+            head: pullRequest.head.ref
           };
         });
     }
@@ -58,7 +60,9 @@ function isntFromFork(pullRequest) {
 }
 
 function isPushToMaster(pullRequest) {
-  return pullRequest.base.ref === 'master';
+  core.info(`base branch: ${pullRequest.base}`);
+  core.info(`head branch: ${pullRequest.head}`);
+  return pullRequest.base === 'master';
 }
 
 function hasRequiredLabels(pullRequest) {
