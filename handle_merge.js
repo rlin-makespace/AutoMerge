@@ -21,10 +21,12 @@ async function handleMerge() {
       owner,
       repo,
       state: "open",
-      base: "master"
+      base: "master",
+      head: "develop"
     },
     (response) => {
       return response.data
+        .filter((pullRequest) => isPushToMaster(pullRequest))
         .filter((pullRequest) => isntFromFork(pullRequest))
         .filter((pullRequest) => hasRequiredLabels(pullRequest))
         .map((pullRequest) => {
@@ -40,6 +42,7 @@ async function handleMerge() {
   core.info(`${pullRequests.length} scheduled pull requests found`);
   
   for await (const pullRequest of pullRequests) {
+    core.info(`repo info: ${pullRequest.base}, ${pullRequest.head}, ${pullRequest.owner} `);
     await octokit.pulls.merge({
       owner,
       repo,
@@ -53,6 +56,10 @@ async function handleMerge() {
 
 function isntFromFork(pullRequest) {
   return !pullRequest.head.repo.fork;
+}
+
+function isPushToMaster(pullRequest) {
+  return pullRequest.base.ref === 'master'
 }
 
 function hasRequiredLabels(pullRequest) {
