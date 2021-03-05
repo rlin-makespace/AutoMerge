@@ -28,9 +28,12 @@ async function handleMerge() {
       owner,
       repo,
       state: "open",
+      base: "master",
+      head: "develop"
     },
     (response) => {
       return response.data
+        .filter((pullRequest) => isPushToMaster(pullRequest))
         .filter((pullRequest) => isntFromFork(pullRequest))
         .filter((pullRequest) => hasRequiredLabels(pullRequest))
         .map((pullRequest) => {
@@ -38,6 +41,8 @@ async function handleMerge() {
             number: pullRequest.number,
             html_url: pullRequest.html_url,
             ref: pullRequest.head.sha,
+            base: pullRequest.base.ref,
+            head: pullRequest.head.ref
           };
         });
     }
@@ -59,6 +64,12 @@ async function handleMerge() {
 
 function isntFromFork(pullRequest) {
   return !pullRequest.head.repo.fork;
+}
+
+function isPushToMaster(pullRequest) {
+  core.info(`base branch: ${pullRequest.base}`);
+  core.info(`head branch: ${pullRequest.head}`);
+  return pullRequest.base === 'master';
 }
 
 function hasRequiredLabels(pullRequest) {
