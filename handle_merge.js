@@ -59,7 +59,7 @@ function isntFromFork(pullRequest) {
 }
 
 function isPushToMaster(pullRequest) {
-  return pullRequest.base.ref === 'master'
+  return pullRequest.base.ref === 'master';
 }
 
 function hasRequiredLabels(pullRequest) {
